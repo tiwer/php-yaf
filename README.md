@@ -1,5 +1,5 @@
 # Yaf - Yet Another Framework  
-[![Build Status](https://secure.travis-ci.org/laruence/php-yaf.png)](http://travis-ci.org/laruence/php-yaf)
+[![Build Status](https://secure.travis-ci.org/laruence/php-yaf.png)](https://travis-ci.org/laruence/php-yaf)
 
 PHP framework written in c and built as a PHP extension.
 
@@ -27,6 +27,9 @@ Yaf manual could be found at: http://www.php.net/manual/en/book.yaf.php
 
 ## IRC
 efnet.org #php.yaf
+
+## For IDE
+you could find a documented prototype script here: https://github.com/elad-yosifon/php-yaf-doc
 
 ## Tutorial
 

@@ -12,35 +12,17 @@
   +----------------------------------------------------------------------+
   | Author: Xinchen Hui  <laruence@php.net>                              |
   +----------------------------------------------------------------------+
- */
-
-/* $Id: http.c 321289 2011-12-21 02:53:29Z laruence $ */
-
-zend_class_entry *yaf_response_http_ce;
-
-/** {{{ yaf_response_methods
 */
-zend_function_entry yaf_response_http_methods[] = {
-	{NULL, NULL, NULL}
-};
-/* }}} */
 
-/** {{{ YAF_STARTUP_FUNCTION
-*/
-YAF_STARTUP_FUNCTION(response_http) {
-	zend_class_entry ce;
+/* $Id: yaf_request.h 329002 2013-01-07 12:55:53Z laruence $ */
 
-	YAF_INIT_CLASS_ENTRY(ce, "Yaf_Response_Http", "Yaf\\Response\\Http", yaf_response_http_methods);
+#ifndef YAF_REQUEST_HTTP_H
+#define YAF_REQUEST_HTTP_H
 
-	yaf_response_http_ce = zend_register_internal_class_ex(&ce, yaf_response_ce, NULL TSRMLS_CC);
+yaf_request_t * yaf_request_http_instance(yaf_request_t *this_ptr, char *request_uri, char *base_uri TSRMLS_DC);
+YAF_STARTUP_FUNCTION(request_http);
 
-	zend_declare_property_bool(yaf_response_http_ce, ZEND_STRL(YAF_RESPONSE_PROPERTY_NAME_HEADEREXCEPTION), 1, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_long(yaf_response_http_ce, ZEND_STRL(YAF_RESPONSE_PROPERTY_NAME_RESPONSECODE),	200, ZEND_ACC_PROTECTED TSRMLS_CC);
-
-	return SUCCESS;
-}
-/* }}} */
-
+#endif
 /*
  * Local variables:
  * tab-width: 4

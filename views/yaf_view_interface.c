@@ -14,34 +14,23 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: interface.c 327426 2012-09-02 04:01:00Z laruence $ */
+/* $Id: interface.c 329197 2013-01-18 05:55:37Z laruence $ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+
+#include "php_yaf.h"
+#include "yaf_namespace.h"
+#include "yaf_exception.h"
+#include "yaf_loader.h"
+#include "yaf_view.h"
+
+#include "views/yaf_view_interface.h"
 
 zend_class_entry *yaf_view_interface_ce;
-
-/* {{{ ARG_INFO
- */
-ZEND_BEGIN_ARG_INFO_EX(yaf_view_assign_arginfo, 0, 0, 1)
-	ZEND_ARG_INFO(0, name)
-	ZEND_ARG_INFO(0, value)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(yaf_view_display_arginfo, 0, 0, 1)
-	ZEND_ARG_INFO(0, tpl)
-	ZEND_ARG_INFO(0, tpl_vars)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(yaf_view_render_arginfo, 0, 0, 1)
-	ZEND_ARG_INFO(0, tpl)
-	ZEND_ARG_INFO(0, tpl_vars)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(yaf_view_setpath_arginfo, 0, 0, 1)
-	ZEND_ARG_INFO(0, template_dir)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(yaf_view_getpath_arginfo, 0, 0, 0)
-ZEND_END_ARG_INFO()
-/* }}} */
 
 /** {{{ yaf_view_interface_methods
  */

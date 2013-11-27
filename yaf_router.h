@@ -14,7 +14,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: yaf_router.h 327580 2012-09-10 06:31:34Z laruence $ */
+/* $Id: yaf_router.h 329002 2013-01-07 12:55:53Z laruence $ */
 
 #ifndef YAF_ROUTER_H
 #define YAF_ROUTER_H
@@ -24,7 +24,7 @@
 #define YAF_ROUTER_DEFAULT_MODULE	  	"Index"
 #define YAF_DEFAULT_EXT 		 	   	"php"
 
-#define YAF_ROUTER_PROPERTY_NAME_ROUTERS 		"_routes"
+#define YAF_ROUTER_PROPERTY_NAME_ROUTES 		"_routes"
 #define YAF_ROUTER_PROPERTY_NAME_CURRENT_ROUTE	"_current"
 
 extern zend_class_entry * yaf_router_ce;

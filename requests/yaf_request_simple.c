@@ -14,7 +14,20 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: simple.c 327591 2012-09-10 10:56:13Z laruence $ */
+/* $Id: simple.c 329197 2013-01-18 05:55:37Z laruence $ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+#include "main/SAPI.h"
+
+#include "php_yaf.h"
+#include "yaf_namespace.h"
+#include "yaf_request.h"
+#include "yaf_exception.h"
+#include "requests/yaf_request_simple.h"
 
 static zend_class_entry *yaf_request_simple_ce;
 
@@ -126,7 +139,7 @@ PHP_METHOD(yaf_request_simple, __construct) {
 	zval *action 	 = NULL;
 	zval *params	 = NULL;
 	zval *method	 = NULL;
-	zval *self 		 = getThis();
+	zval *self	 = getThis();
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|zzzzz", &method, &module, &controller, &action, &params) == FAILURE) {
 		YAF_UNINITIALIZED_OBJECT(getThis());

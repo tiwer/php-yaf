@@ -14,18 +14,14 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: yaf_loader.c 328824 2012-12-18 10:13:17Z remi $ */
+/* $Id: yaf_loader.c 329197 2013-01-18 05:55:37Z laruence $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include "php.h"
-#include "php_ini.h"
-#include "main/SAPI.h"
-#include "Zend/zend_alloc.h"
-#include "ext/standard/php_smart_str.h"
-#include "TSRM/tsrm_virtual_cwd.h"
+#include "ext/standard/php_smart_str.h" /* for smart_str */
 
 #include "php_yaf.h"
 #include "yaf_application.h"
@@ -200,7 +196,7 @@ int yaf_loader_is_local_namespace(yaf_loader_t *loader, char *class_name, int le
 	ns	= YAF_G(local_namespaces);
 
 	pos = strstr(class_name, "_");
-    if (pos) {
+	if (pos) {
 		prefix_len 	= pos - class_name;
 		prefix 		= class_name;
 		backup = class_name + prefix_len;
@@ -221,21 +217,27 @@ int yaf_loader_is_local_namespace(yaf_loader_t *loader, char *class_name, int le
 		prefix_len = len;
 	}
 
-	if (!prefix) {
-		return 0;
-	}
-
 	while ((pos = strstr(ns, prefix))) {
 		if ((pos == ns) && (*(pos + prefix_len) == DEFAULT_DIR_SEPARATOR || *(pos + prefix_len) == '\0')) {
 			if (backup) {
 				*backup = orig_char;
 			}
+#ifdef YAF_HAVE_NAMESPACE
+			if (prefix != class_name) {
+				efree(prefix);
+			}
+#endif
 			return 1;
 		} else if (*(pos - 1) == DEFAULT_DIR_SEPARATOR 
 				&& (*(pos + prefix_len) == DEFAULT_DIR_SEPARATOR || *(pos + prefix_len) == '\0')) {
 			if (backup) {
 				*backup = orig_char;
 			}
+#ifdef YAF_HAVE_NAMESPACE
+			if (prefix != class_name) {
+				efree(prefix);
+			}
+#endif
 			return 1;
 		}
 		ns = pos + prefix_len;
@@ -244,6 +246,11 @@ int yaf_loader_is_local_namespace(yaf_loader_t *loader, char *class_name, int le
 	if (backup) {
 		*backup = orig_char;
 	}
+#ifdef YAF_HAVE_NAMESPACE
+	if (prefix != class_name) {
+		efree(prefix);
+	}
+#endif
 
 	return 0;
 }
@@ -873,11 +880,11 @@ PHP_METHOD(yaf_loader, autoload) {
 /** {{{ proto public Yaf_Loader::getInstance($library = NULL, $global_library = NULL)
 */
 PHP_METHOD(yaf_loader, getInstance) {
-	char *library	 	= NULL;
-	char *global	 	= NULL;
-	int	 library_len 	= 0;
-	int  global_len	 	= 0;
-	yaf_loader_t *loader;
+	char 		*library	= NULL;
+	char 		*global	 	= NULL;
+	int	 	library_len 	= 0;
+	int  		global_len	= 0;
+	yaf_loader_t 	*loader;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|ss", &library, &library_len, &global, &global_len) == FAILURE) {
 		return;
@@ -908,19 +915,19 @@ PHP_FUNCTION(yaf_override_spl_autoload) {
 /** {{{ yaf_loader_methods
 */
 zend_function_entry yaf_loader_methods[] = {
-	PHP_ME(yaf_loader, __construct, 			yaf_loader_void_arginfo, ZEND_ACC_PRIVATE|ZEND_ACC_CTOR)
-	PHP_ME(yaf_loader, __clone,					NULL, ZEND_ACC_PRIVATE|ZEND_ACC_CLONE)
-	PHP_ME(yaf_loader, __sleep,					NULL, ZEND_ACC_PRIVATE)
-	PHP_ME(yaf_loader, __wakeup,				NULL, ZEND_ACC_PRIVATE)
-	PHP_ME(yaf_loader, autoload,				yaf_loader_autoloader_arginfo,  ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_loader, getInstance,				yaf_loader_getinstance_arginfo, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(yaf_loader, registerLocalNamespace,	yaf_loader_regnamespace_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_loader, getLocalNamespace,		yaf_loader_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_loader, clearLocalNamespace,		yaf_loader_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_loader, isLocalName,				yaf_loader_islocalname_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_loader, import,					yaf_loader_import_arginfo, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(yaf_loader, setLibraryPath,			yaf_loader_setlib_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_loader, getLibraryPath,			yaf_loader_getlib_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_loader, __construct, 			yaf_loader_void_arginfo, 		ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
+	PHP_ME(yaf_loader, __clone,				NULL, 					ZEND_ACC_PRIVATE | ZEND_ACC_CLONE)
+	PHP_ME(yaf_loader, __sleep,				NULL, 					ZEND_ACC_PRIVATE)
+	PHP_ME(yaf_loader, __wakeup,				NULL, 					ZEND_ACC_PRIVATE)
+	PHP_ME(yaf_loader, autoload,				yaf_loader_autoloader_arginfo,  	ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_loader, getInstance,				yaf_loader_getinstance_arginfo, 	ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(yaf_loader, registerLocalNamespace,		yaf_loader_regnamespace_arginfo, 	ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_loader, getLocalNamespace,			yaf_loader_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_loader, clearLocalNamespace,			yaf_loader_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_loader, isLocalName,				yaf_loader_islocalname_arginfo, 	ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_loader, import,				yaf_loader_import_arginfo,		ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(yaf_loader, setLibraryPath,			yaf_loader_setlib_arginfo,		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_loader, getLibraryPath,			yaf_loader_getlib_arginfo,		ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */

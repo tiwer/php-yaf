@@ -14,12 +14,33 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: simple.c 327626 2012-09-13 02:57:39Z laruence $ */
+/* $Id: simple.c 329197 2013-01-18 05:55:37Z laruence $ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+#include "Zend/zend_interfaces.h"
+
+#include "php_yaf.h"
+#include "yaf_namespace.h"
+#include "yaf_exception.h"
+#include "yaf_config.h"
+
+#include "configs/yaf_config_simple.h"
 
 zend_class_entry *yaf_config_simple_ce;
 
+#ifdef HAVE_SPL
+extern PHPAPI zend_class_entry *spl_ce_Countable;
+#endif
+
 /** {{{ ARG_INFO
  */
+ZEND_BEGIN_ARG_INFO_EX(yaf_config_simple_void_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(yaf_config_simple_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config_file)
 	ZEND_ARG_INFO(0, section)
@@ -162,7 +183,7 @@ PHP_METHOD(yaf_config_simple, set) {
 			return;
 		}
 
-		if (Z_TYPE_P(name) != IS_STRING || Z_TYPE_P(name) != IS_STRING) {
+		if (Z_TYPE_P(name) != IS_STRING || !Z_STRLEN_P(name)) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Expect a string key name");
 			RETURN_FALSE;
 		}
@@ -205,7 +226,7 @@ PHP_METHOD(yaf_config_simple, offsetUnset) {
 			return;
 		}
 
-		if (Z_TYPE_P(name) != IS_STRING || Z_TYPE_P(name) != IS_STRING) {
+		if (Z_TYPE_P(name) != IS_STRING || !Z_STRLEN_P(name)) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Expect a string key name");
 			RETURN_FALSE;
 		}
@@ -293,7 +314,7 @@ PHP_METHOD(yaf_config_simple, next) {
 */
 PHP_METHOD(yaf_config_simple, valid) {
 	zval *prop = zend_read_property(yaf_config_simple_ce, getThis(), ZEND_STRL(YAF_CONFIG_PROPERT_NAME), 1 TSRMLS_CC);
-	RETURN_LONG(zend_hash_has_more_elements(Z_ARRVAL_P(prop)) == SUCCESS);
+	RETURN_BOOL(zend_hash_has_more_elements(Z_ARRVAL_P(prop)) == SUCCESS);
 }
 /* }}} */
 
@@ -325,15 +346,15 @@ zend_function_entry yaf_config_simple_methods[] = {
 	PHP_ME(yaf_config_simple, __isset, yaf_config_simple_isset_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_config_simple, get, yaf_config_simple_get_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_config_simple, set, yaf_config_simple_set_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, count, yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, count, yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_config_simple, offsetUnset,	yaf_config_simple_unset_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, rewind, yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, current, yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, next,	yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, valid, yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, key, yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, readonly,	yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_config_simple, toArray, yaf_config_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, rewind, yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, current, yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, next,	yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, valid, yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, key, yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, readonly,	yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_config_simple, toArray, yaf_config_simple_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(yaf_config_simple, __set, set, yaf_config_simple_set_arginfo, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(yaf_config_simple, __get, get, yaf_config_simple_get_arginfo, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(yaf_config_simple, offsetGet, get, yaf_config_simple_rget_arginfo, ZEND_ACC_PUBLIC)

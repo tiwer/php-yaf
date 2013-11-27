@@ -14,13 +14,25 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: simple.c 327549 2012-09-09 03:02:48Z laruence $ */
+/* $Id: simple.c 329200 2013-01-18 06:26:40Z laruence $ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+
+#include "php_yaf.h"
+#include "yaf_namespace.h"
+#include "yaf_exception.h"
+#include "yaf_application.h" /* for yaf_application_is_module_name */
+#include "yaf_request.h"
+#include "yaf_router.h"
+
+#include "routes/yaf_route_interface.h"
+#include "routes/yaf_route_simple.h"
 
 zend_class_entry *yaf_route_simple_ce;
-
-#define YAF_ROUTE_SIMPLE_VAR_NAME_MODULE		"module"
-#define	YAF_ROUTE_SIMPLE_VAR_NAME_CONTROLLER 	"controller"
-#define YAF_ROUTE_SIMPLE_VAR_NAME_ACTION		"action"
 
 /** {{{ ARG_INFO
  */
@@ -108,7 +120,7 @@ PHP_METHOD(yaf_route_simple, __construct) {
 			|| IS_STRING != Z_TYPE_P(controller)
 			|| IS_STRING != Z_TYPE_P(action)) {
 		YAF_UNINITIALIZED_OBJECT(getThis());
-		yaf_trigger_error(YAF_ERR_TYPE_ERROR TSRMLS_CC, "Expect 3 string paramsters", yaf_route_simple_ce->name);
+		yaf_trigger_error(YAF_ERR_TYPE_ERROR TSRMLS_CC, "Expect 3 string parameters", yaf_route_simple_ce->name);
 		RETURN_FALSE;
 	} else {
 		(void)yaf_route_simple_instance(getThis(), module, controller, action TSRMLS_CC);

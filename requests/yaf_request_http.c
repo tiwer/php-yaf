@@ -14,9 +14,22 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: http.c 327549 2012-09-09 03:02:48Z laruence $ */
+/* $Id: http.c 329197 2013-01-18 05:55:37Z laruence $ */
 
-#include "ext/standard/url.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+#include "main/SAPI.h"
+#include "ext/standard/url.h" /* for php_url */
+
+#include "php_yaf.h"
+#include "yaf_namespace.h"
+#include "yaf_request.h"
+#include "yaf_exception.h"
+
+#include "requests/yaf_request_http.h"
 
 static zend_class_entry * yaf_request_http_ce;
 
@@ -33,14 +46,15 @@ yaf_request_t * yaf_request_http_instance(yaf_request_t *this_ptr, char *request
 		object_init_ex(instance, yaf_request_http_ce);
 	}
 
-    MAKE_STD_ZVAL(method);
-    if (SG(request_info).request_method) {
-        ZVAL_STRING(method, (char *)SG(request_info).request_method, 1);
-    } else if (strncasecmp(sapi_module.name, "cli", 3)) {
-        ZVAL_STRING(method, "Unknow", 1);
-    } else {
-        ZVAL_STRING(method, "Cli", 1);
-    }
+	MAKE_STD_ZVAL(method);
+	if (SG(request_info).request_method) {
+		ZVAL_STRING(method, (char *)SG(request_info).request_method, 1);
+	} else if (strncasecmp(sapi_module.name, "cli", 3)) {
+		ZVAL_STRING(method, "Unknow", 1);
+	} else {
+		ZVAL_STRING(method, "Cli", 1);
+	}
+
 	zend_update_property(yaf_request_http_ce, instance, ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_METHOD), method TSRMLS_CC);
 	zval_ptr_dtor(&method);
 
@@ -64,7 +78,7 @@ yaf_request_t * yaf_request_http_instance(yaf_request_t *this_ptr, char *request
 			if (Z_TYPE_P(uri) != IS_NULL) {
 				zval *rewrited = yaf_request_query(YAF_GLOBAL_VARS_SERVER, ZEND_STRL("IIS_WasUrlRewritten") TSRMLS_CC);
 				zval *unencode = yaf_request_query(YAF_GLOBAL_VARS_SERVER, ZEND_STRL("UNENCODED_URL") TSRMLS_CC);
-				if (Z_TYPE_P(rewrited) = IS_LONG
+				if (Z_TYPE_P(rewrited) == IS_LONG
 						&& Z_LVAL_P(rewrited) == 1
 						&& Z_TYPE_P(unencode) == IS_STRING
 						&& Z_STRLEN_P(unencode) > 0) {
@@ -263,14 +277,14 @@ PHP_METHOD(yaf_request_http, __clone) {
  */
 zend_function_entry yaf_request_http_methods[] = {
 	PHP_ME(yaf_request_http, getQuery, 		NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, getRequest, 	NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request_http, getRequest, 		NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request_http, getPost, 		NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request_http, getCookie,		NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request_http, getFiles,		NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request_http, get,			NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, isXmlHttpRequest,NULL,ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, __construct,	NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(yaf_request_http, __clone,		NULL, ZEND_ACC_PRIVATE|ZEND_ACC_CLONE)
+	PHP_ME(yaf_request_http, isXmlHttpRequest, 	NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request_http, __construct,		NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+	PHP_ME(yaf_request_http, __clone,		NULL, ZEND_ACC_PRIVATE | ZEND_ACC_CLONE)
 	{NULL, NULL, NULL}
 };
 /* }}} */

@@ -14,7 +14,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: yaf_response.h 327510 2012-09-07 04:16:31Z laruence $ */
+/* $Id: yaf_response.h 329197 2013-01-18 05:55:37Z laruence $ */
 
 #ifndef PHP_YAF_RESPONSE_H
 #define PHP_YAF_RESPONSE_H
@@ -22,7 +22,6 @@
 #define YAF_RESPONSE_PROPERTY_NAME_HEADER			"_header"
 #define YAF_RESPONSE_PROPERTY_NAME_BODY				"_body"
 #define YAF_RESPONSE_PROPERTY_NAME_HEADEREXCEPTION	"_sendheader"
-#define YAF_RESPONSE_PROPERTY_NAME_RESPONSECODE		"_response_code"
 #define YAF_RESPONSE_PROPERTY_NAME_DEFAULTBODY		"content"
 #define YAF_RESPONSE_PROPERTY_NAME_DEFAULTBODYNAME  "DEFAULT_BODY"
 
@@ -43,3 +42,12 @@ int yaf_response_clear_body(yaf_response_t *response, char *name, uint name_len 
 YAF_STARTUP_FUNCTION(response);
 
 #endif
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noet sw=4 ts=4 fdm=marker
+ * vim<600: noet sw=4 ts=4
+ */

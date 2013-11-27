@@ -14,27 +14,23 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: yaf_request.c 328820 2012-12-18 08:16:24Z remi $*/
+/* $Id: yaf_request.c 329200 2013-01-18 06:26:40Z laruence $*/
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include "php.h"
-#include "php_ini.h"
-#include "main/SAPI.h"
-#include "Zend/zend_interfaces.h"
-#include "Zend/zend_exceptions.h"
-#include "Zend/zend_alloc.h"
-#include "ext/standard/php_string.h"
+#include "standard/php_string.h" /* for php_basename */
+#include "Zend/zend_exceptions.h" /* for zend_exception_get_default */
 
 #include "php_yaf.h"
 #include "yaf_request.h"
 #include "yaf_namespace.h"
 #include "yaf_exception.h"
 
-#include "requests/simple.c"
-#include "requests/http.c"
+#include "requests/yaf_request_simple.h"
+#include "requests/yaf_request_http.h"
 
 zend_class_entry *yaf_request_ce;
 
@@ -59,12 +55,12 @@ ZEND_BEGIN_ARG_INFO_EX(yaf_request_set_action_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, action)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(yaf_request_set_baseuir_arginfo, 0, 0, 1)
-	ZEND_ARG_INFO(0, uir)
+ZEND_BEGIN_ARG_INFO_EX(yaf_request_set_baseuri_arginfo, 0, 0, 1)
+	ZEND_ARG_INFO(0, uri)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(yaf_request_set_request_uri_arginfo, 0, 0, 1)
-	ZEND_ARG_INFO(0, uir)
+	ZEND_ARG_INFO(0, uri)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(yaf_request_set_param_arginfo, 0, 0, 1)
@@ -127,9 +123,9 @@ int yaf_request_set_base_uri(yaf_request_t *request, char *base_uri, char *reque
 							NULL, 0, &script, &script_len TSRMLS_CC);
 
 					if (strncmp(file_name, script, file_name_len) == 0) {
-						basename 	 = Z_STRVAL_P(script_name);
-						basename_len = Z_STRLEN_P(script_name);
-						container = script_name;
+						basename 	= Z_STRVAL_P(script_name);
+						basename_len 	= Z_STRLEN_P(script_name);
+						container 	= script_name;
 						efree(file_name);
 						efree(script);
 						break;
@@ -785,28 +781,28 @@ PHP_METHOD(yaf_request, setRouted) {
 /** {{{ yaf_request_methods
 */
 zend_function_entry yaf_request_methods[] = {
-	PHP_ME(yaf_request, isGet, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, isPost,	yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, isPut, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, isHead, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, isOptions, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, isCli, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, isXmlHttpRequest, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getServer, yaf_request_getserver_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getEnv, yaf_request_getenv_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, setParam, yaf_request_set_param_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getParam, yaf_request_get_param_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getParams, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getException, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getModuleName, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getControllerName, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getActionName, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, setModuleName, yaf_request_set_module_name_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, setControllerName, yaf_request_set_controller_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, setActionName, yaf_request_set_action_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getMethod, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, getLanguage, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request, setBaseUri, yaf_request_set_baseuir_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, isGet, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, isPost,		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, isPut, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, isHead, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, isOptions, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, isCli, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, isXmlHttpRequest, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getServer, 		yaf_request_getserver_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getEnv, 		yaf_request_getenv_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, setParam, 		yaf_request_set_param_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getParam, 		yaf_request_get_param_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getParams, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getException, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getModuleName, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getControllerName, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getActionName, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, setModuleName, 	yaf_request_set_module_name_arginfo, 	ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, setControllerName, 	yaf_request_set_controller_arginfo, 	ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, setActionName, 	yaf_request_set_action_arginfo, 	ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getMethod, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getLanguage, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, setBaseUri, yaf_request_set_baseuri_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, getBaseUri,	yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, getRequestUri, yaf_request_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, setRequestUri, yaf_request_set_request_uri_arginfo, ZEND_ACC_PUBLIC)

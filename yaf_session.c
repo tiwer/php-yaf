@@ -14,17 +14,14 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: yaf_session.c 328268 2012-11-07 14:44:04Z laruence $ */
+/* $Id: yaf_session.c 329197 2013-01-18 05:55:37Z laruence $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include "php.h"
-#include "php_ini.h"
-#include "Zend/zend_interfaces.h"
-#include "Zend/zend_objects.h"
-#include "main/SAPI.h"
+#include "Zend/zend_interfaces.h"  /* for zend_ce_iterator */
 
 #include "php_yaf.h"
 #include "yaf_namespace.h"
@@ -32,6 +29,7 @@
 #include "yaf_exception.h"
 
 zend_class_entry * yaf_session_ce;
+
 #ifdef HAVE_SPL
 extern PHPAPI zend_class_entry * spl_ce_Countable;
 #endif
@@ -186,8 +184,8 @@ PHP_METHOD(yaf_session, start) {
 /** {{{ proto public static Yaf_Session::get($name)
 */
 PHP_METHOD(yaf_session, get) {
-	char *name  = NULL;
-	int  len	= 0;
+	char *name 	= NULL;
+	int  len 	= 0;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &name, &len) == FAILURE) {
 		WRONG_PARAM_COUNT;
 	} else {
@@ -245,6 +243,15 @@ PHP_METHOD(yaf_session, del) {
 	}
 
 	RETURN_FALSE;
+}
+/* }}} */
+
+/** {{{ proto public static Yaf_Session::clear()
+*/
+PHP_METHOD(yaf_session, clear) {
+	zval *sess = zend_read_property(yaf_session_ce, getThis(), ZEND_STRL(YAF_SESSION_PROPERTY_NAME_SESSION), 1 TSRMLS_CC);
+
+	zend_hash_clean(Z_ARRVAL_P(sess));
 }
 /* }}} */
 
@@ -336,6 +343,7 @@ zend_function_entry yaf_session_methods[] = {
 	PHP_ME(yaf_session, current, yaf_session_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_session, key, yaf_session_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_session, valid, yaf_session_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_session, clear, yaf_session_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(yaf_session, offsetGet, get, yaf_session_get_arginfo, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(yaf_session, offsetSet, set, yaf_session_set_arginfo, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(yaf_session, offsetExists, has, yaf_session_has_arginfo, ZEND_ACC_PUBLIC)

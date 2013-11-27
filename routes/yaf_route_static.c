@@ -14,7 +14,23 @@
   +----------------------------------------------------------------------+
  */
 
-/* $Id: static.c 327627 2012-09-13 06:12:38Z laruence $ */
+/* $Id: static.c 329200 2013-01-18 06:26:40Z laruence $ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+
+#include "php_yaf.h"
+#include "yaf_namespace.h"
+#include "yaf_exception.h"
+#include "yaf_application.h" /* for yaf_application_is_module_name */
+#include "yaf_request.h"
+
+#include "yaf_router.h"
+#include "routes/yaf_route_interface.h"
+#include "routes/yaf_route_static.h"
 
 zend_class_entry * yaf_route_static_ce;
 
@@ -25,7 +41,7 @@ ZEND_BEGIN_ARG_INFO_EX(yaf_route_static_match_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-static int yaf_route_pathinfo_route(yaf_request_t *request, char *req_uri, int req_uri_len TSRMLS_DC) /* {{{ */ {
+int yaf_route_pathinfo_route(yaf_request_t *request, char *req_uri, int req_uri_len TSRMLS_DC) /* {{{ */ {
 	zval *params;
 	char *module = NULL, *controller = NULL, *action = NULL, *rest = NULL;
 
@@ -162,7 +178,7 @@ int yaf_route_static_route(yaf_route_t *route, yaf_request_t *request TSRMLS_DC)
 }
 /* }}} */
 
-/** {{{ proto public Yaf_Router_Classical::route(Yaf_Request $req)
+/** {{{ proto public Yaf_Router_Static::route(Yaf_Request $req)
 */
 PHP_METHOD(yaf_route_static, route) {
 	yaf_request_t *request;
@@ -175,7 +191,7 @@ PHP_METHOD(yaf_route_static, route) {
 }
 /* }}} */
 
-/** {{{ proto public Yaf_Router_Classical::match(string $uri)
+/** {{{ proto public Yaf_Router_Static::match(string $uri)
 */
 PHP_METHOD(yaf_route_static, match) {
 	RETURN_TRUE;

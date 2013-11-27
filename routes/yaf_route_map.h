@@ -14,31 +14,21 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: cli.c 321289 2011-12-21 02:53:29Z laruence $ */
+/* $Id: yaf_router.h 329002 2013-01-07 12:55:53Z laruence $ */
 
+#ifndef YAF_ROUTER_MAP_H
+#define YAF_ROUTER_MAP_H
 
-zend_class_entry * yaf_response_cli_ce;
+#define YAF_ROUTE_MAP_VAR_NAME_DELIMETER	"_delimiter"
+#define YAF_ROUTE_MAP_VAR_NAME_CTL_PREFER	"_ctl_router"
 
-/** {{{ yaf_response_methods
-*/
-zend_function_entry yaf_response_cli_methods[] = {
-	{NULL, NULL, NULL}
-};
-/* }}} */
+extern zend_class_entry *yaf_route_map_ce;
 
-/** {{{ YAF_STARTUP_FUNCTION
-*/
-YAF_STARTUP_FUNCTION(response_cli) {
-	zend_class_entry ce;
+yaf_route_t * yaf_route_map_instance(yaf_route_t *this_ptr, zend_bool controller_prefer, char *delim, uint len TSRMLS_DC);
 
-	YAF_INIT_CLASS_ENTRY(ce, "Yaf_Response_Cli", "Yaf\\Response\\Cli", yaf_response_cli_methods);
+YAF_STARTUP_FUNCTION(route_map);
 
-	yaf_response_cli_ce = zend_register_internal_class_ex(&ce, yaf_response_ce, NULL TSRMLS_CC);
-
-	return SUCCESS;
-}
-/* }}} */
-
+#endif
 /*
  * Local variables:
  * tab-width: 4

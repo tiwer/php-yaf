@@ -14,15 +14,13 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: yaf_registry.c 328268 2012-11-07 14:44:04Z laruence $  */
+/* $Id: yaf_registry.c 329197 2013-01-18 05:55:37Z laruence $  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include "php.h"
-#include "php_ini.h"
-#include "main/SAPI.h"
 
 #include "php_yaf.h"
 #include "yaf_namespace.h"

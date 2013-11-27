@@ -13,8 +13,8 @@
  <date>2013-01-04</date>
  <time>18:27:23</time>
  <version>
-  <release>2.2.9</release>
-  <api>2.2.9</api>
+  <release>2.2.10</release>
+  <api>2.2.10</api>
  </version>
  <stability>
   <release>stable</release>
@@ -22,8 +22,7 @@
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
  <notes>
-  - Fixed bug #63900 (Segfault if separated action executes failed)
-  - Fixed some compiler warnings (Remi)
+  - Added Yaf_Response::setHeader, getHeahder, setAllHeader, clearHeaders Methods
  </notes>
  <contents> 
   <dir name="/"> 
@@ -64,34 +63,33 @@
    <file name="yaf_view.c" role="src" />
    <file name="yaf_view.h" role="src" />
    <dir name="configs">
-    <file name="ini.c" role="src" />
-    <file name="simple.c" role="src" />
+    <file name="yaf_config_ini.c" role="src" />
+    <file name="yaf_config_simple.c" role="src" />
    </dir>
    <file name="config.w32" role="src" />
-   <file name="LICENSE" role="src" />
-   <file name="CREDITS" role="src" />
-   <file name="EXPERIMENTAL" role="src" />
+   <file name="LICENSE" role="doc" />
+   <file name="CREDITS" role="doc" />
    <file name="php_yaf.h" role="src" />
    <dir name="requests">
-    <file name="http.c" role="src" />
-    <file name="simple.c" role="src" />
+    <file name="yaf_request_http.c" role="src" />
+    <file name="yaf_request_simple.c" role="src" />
    </dir>
-   <dir name="response">
-    <file name="http.c" role="src" />
-    <file name="cli.c" role="src" />
+   <dir name="responses">
+    <file name="yaf_response_http.c" role="src" />
+    <file name="yaf_response_cli.c" role="src" />
    </dir>
    <dir name="routes">
-    <file name="interface.c" role="src" />
-    <file name="rewrite.c" role="src" />
-    <file name="supervar.c" role="src" />
-    <file name="static.c" role="src" />
-    <file name="simple.c" role="src" />
-    <file name="regex.c" role="src" />
-    <file name="map.c" role="src" />
+    <file name="yaf_route_interface.c" role="src" />
+    <file name="yaf_route_rewrite.c" role="src" />
+    <file name="yaf_route_supervar.c" role="src" />
+    <file name="yaf_route_static.c" role="src" />
+    <file name="yaf_route_simple.c" role="src" />
+    <file name="yaf_route_regex.c" role="src" />
+    <file name="yaf_route_map.c" role="src" />
    </dir>
    <dir name="views">
-    <file name="interface.c" role="src" />
-    <file name="simple.c" role="src" />
+    <file name="yaf_view_interface.c" role="src" />
+    <file name="yaf_view_simple.c" role="src" />
    </dir>
    <dir name="tests">
     <file name="001.phpt" role="test" />
@@ -156,6 +154,16 @@
     <file name="060.phpt" role="test" />
     <file name="061.phpt" role="test" />
     <file name="062.phpt" role="test" />
+    <file name="063.phpt" role="test" />
+    <file name="064.phpt" role="test" />
+    <file name="065.phpt" role="test" />
+    <file name="066.phpt" role="test" />
+    <file name="067.phpt" role="test" />
+    <file name="068.phpt" role="test" />
+    <file name="069.phpt" role="test" />
+    <file name="070.phpt" role="test" />
+    <file name="071.phpt" role="test" />
+    <file name="072.phpt" role="test" />
     <file name="build.inc" role="test" />
     <file name="bug61493.phpt" role="test" />
     <file name="bug63381.phpt" role="test" />
